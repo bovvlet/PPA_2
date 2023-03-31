@@ -1,0 +1,1 @@
+bison -d -v -o parser.cpp parser.y && flex --header-file=lexer.hpp -o lexer.cpp lexer.l && g++ lexer.cpp parser.cpp -o program && ./program
