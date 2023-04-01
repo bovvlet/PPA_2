@@ -1,0 +1,672 @@
+Терминалы не используются в грамматике
+
+    INVALID_CHARACHER
+
+
+Состояние 16 конфликты: 2 сдвига/вывода
+Состояние 31 конфликты: 1 сдвига/вывода
+
+
+Грамматика
+
+    0 $accept: stmt $end
+
+    1 stmt: NAME ASSIGN a_expr
+    2     | stmt SEMICOLON
+    3     | stmt SEMICOLON stmt
+    4     | IF bool_expr LPARENT stmt RPARENT ELSE LPARENT stmt RPARENT
+    5     | WHILE bool_expr LPARENT stmt RPARENT
+
+    6 a_expr: NAME
+    7       | NUMBER
+    8       | a_expr PLUS a_expr
+    9       | a_expr MINUS a_expr
+   10       | a_expr MULT a_expr
+   11       | a_expr DIV a_expr
+
+   12 bool_expr: BOOLEAN
+   13          | NOT bool_expr
+   14          | bool_expr AND bool_expr
+   15          | bool_expr OR bool_expr
+   16          | a_expr LT a_expr
+   17          | a_expr GT a_expr
+   18          | a_expr LEQ a_expr
+   19          | a_expr GEQ a_expr
+   20          | a_expr EQ a_expr
+   21          | a_expr NEQ a_expr
+
+
+Терминальные символы с правилами, в которых они появляются
+
+    $end (0) 0
+    error (256)
+    NUMBER <num> (258) 7
+    NAME <str> (259) 1 6
+    BOOLEAN <boolean> (260) 12
+    INVALID_CHARACHER <str> (261)
+    ASSIGN (262) 1
+    PLUS (263) 8
+    MINUS (264) 9
+    MULT (265) 10
+    DIV (266) 11
+    SEMICOLON (267) 2 3
+    IF (268) 4
+    ELSE (269) 4
+    WHILE (270) 5
+    LEQ (271) 18
+    LT (272) 16
+    GEQ (273) 19
+    GT (274) 17
+    EQ (275) 20
+    AND (276) 14
+    OR (277) 15
+    NOT (278) 13
+    LPARENT (279) 4 5
+    RPARENT (280) 4 5
+    NEQ (281) 21
+
+
+Нетерминальные символы с правилами, в которых они появляются
+
+    $accept (27)
+        on left: 0
+    stmt <statement> (28)
+        on left: 1 2 3 4 5
+        on right: 0 2 3 4 5
+    a_expr <expression> (29)
+        on left: 6 7 8 9 10 11
+        on right: 1 8 9 10 11 16 17 18 19 20 21
+    bool_expr <expression> (30)
+        on left: 12 13 14 15 16 17 18 19 20 21
+        on right: 4 5 13 14 15
+
+
+Состояние 0
+
+    0 $accept: • stmt $end
+
+    NAME   сдвиг, и переход в состояние 1
+    IF     сдвиг, и переход в состояние 2
+    WHILE  сдвиг, и переход в состояние 3
+
+    stmt  переход в состояние 4
+
+
+Состояние 1
+
+    1 stmt: NAME • ASSIGN a_expr
+
+    ASSIGN  сдвиг, и переход в состояние 5
+
+
+Состояние 2
+
+    4 stmt: IF • bool_expr LPARENT stmt RPARENT ELSE LPARENT stmt RPARENT
+
+    NUMBER   сдвиг, и переход в состояние 6
+    NAME     сдвиг, и переход в состояние 7
+    BOOLEAN  сдвиг, и переход в состояние 8
+    NOT      сдвиг, и переход в состояние 9
+
+    a_expr     переход в состояние 10
+    bool_expr  переход в состояние 11
+
+
+Состояние 3
+
+    5 stmt: WHILE • bool_expr LPARENT stmt RPARENT
+
+    NUMBER   сдвиг, и переход в состояние 6
+    NAME     сдвиг, и переход в состояние 7
+    BOOLEAN  сдвиг, и переход в состояние 8
+    NOT      сдвиг, и переход в состояние 9
+
+    a_expr     переход в состояние 10
+    bool_expr  переход в состояние 12
+
+
+Состояние 4
+
+    0 $accept: stmt • $end
+    2 stmt: stmt • SEMICOLON
+    3     | stmt • SEMICOLON stmt
+
+    $end       сдвиг, и переход в состояние 13
+    SEMICOLON  сдвиг, и переход в состояние 14
+
+
+Состояние 5
+
+    1 stmt: NAME ASSIGN • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 15
+
+
+Состояние 6
+
+    7 a_expr: NUMBER •
+
+    $default  вывод с использованием правила 7 (a_expr)
+
+
+Состояние 7
+
+    6 a_expr: NAME •
+
+    $default  вывод с использованием правила 6 (a_expr)
+
+
+Состояние 8
+
+   12 bool_expr: BOOLEAN •
+
+    $default  вывод с использованием правила 12 (bool_expr)
+
+
+Состояние 9
+
+   13 bool_expr: NOT • bool_expr
+
+    NUMBER   сдвиг, и переход в состояние 6
+    NAME     сдвиг, и переход в состояние 7
+    BOOLEAN  сдвиг, и переход в состояние 8
+    NOT      сдвиг, и переход в состояние 9
+
+    a_expr     переход в состояние 10
+    bool_expr  переход в состояние 16
+
+
+Состояние 10
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   16 bool_expr: a_expr • LT a_expr
+   17          | a_expr • GT a_expr
+   18          | a_expr • LEQ a_expr
+   19          | a_expr • GEQ a_expr
+   20          | a_expr • EQ a_expr
+   21          | a_expr • NEQ a_expr
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+    LEQ    сдвиг, и переход в состояние 21
+    LT     сдвиг, и переход в состояние 22
+    GEQ    сдвиг, и переход в состояние 23
+    GT     сдвиг, и переход в состояние 24
+    EQ     сдвиг, и переход в состояние 25
+    NEQ    сдвиг, и переход в состояние 26
+
+
+Состояние 11
+
+    4 stmt: IF bool_expr • LPARENT stmt RPARENT ELSE LPARENT stmt RPARENT
+   14 bool_expr: bool_expr • AND bool_expr
+   15          | bool_expr • OR bool_expr
+
+    AND      сдвиг, и переход в состояние 27
+    OR       сдвиг, и переход в состояние 28
+    LPARENT  сдвиг, и переход в состояние 29
+
+
+Состояние 12
+
+    5 stmt: WHILE bool_expr • LPARENT stmt RPARENT
+   14 bool_expr: bool_expr • AND bool_expr
+   15          | bool_expr • OR bool_expr
+
+    AND      сдвиг, и переход в состояние 27
+    OR       сдвиг, и переход в состояние 28
+    LPARENT  сдвиг, и переход в состояние 30
+
+
+Состояние 13
+
+    0 $accept: stmt $end •
+
+    $default  принять
+
+
+Состояние 14
+
+    2 stmt: stmt SEMICOLON •
+    3     | stmt SEMICOLON • stmt
+
+    NAME   сдвиг, и переход в состояние 1
+    IF     сдвиг, и переход в состояние 2
+    WHILE  сдвиг, и переход в состояние 3
+
+    $default  вывод с использованием правила 2 (stmt)
+
+    stmt  переход в состояние 31
+
+
+Состояние 15
+
+    1 stmt: NAME ASSIGN a_expr •
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 1 (stmt)
+
+
+Состояние 16
+
+   13 bool_expr: NOT bool_expr •
+   14          | bool_expr • AND bool_expr
+   15          | bool_expr • OR bool_expr
+
+    AND  сдвиг, и переход в состояние 27
+    OR   сдвиг, и переход в состояние 28
+
+    AND       [вывод с использованием правила 13 (bool_expr)]
+    OR        [вывод с использованием правила 13 (bool_expr)]
+    $default  вывод с использованием правила 13 (bool_expr)
+
+
+Состояние 17
+
+    8 a_expr: a_expr PLUS • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 32
+
+
+Состояние 18
+
+    9 a_expr: a_expr MINUS • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 33
+
+
+Состояние 19
+
+   10 a_expr: a_expr MULT • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 34
+
+
+Состояние 20
+
+   11 a_expr: a_expr DIV • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 35
+
+
+Состояние 21
+
+   18 bool_expr: a_expr LEQ • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 36
+
+
+Состояние 22
+
+   16 bool_expr: a_expr LT • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 37
+
+
+Состояние 23
+
+   19 bool_expr: a_expr GEQ • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 38
+
+
+Состояние 24
+
+   17 bool_expr: a_expr GT • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 39
+
+
+Состояние 25
+
+   20 bool_expr: a_expr EQ • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 40
+
+
+Состояние 26
+
+   21 bool_expr: a_expr NEQ • a_expr
+
+    NUMBER  сдвиг, и переход в состояние 6
+    NAME    сдвиг, и переход в состояние 7
+
+    a_expr  переход в состояние 41
+
+
+Состояние 27
+
+   14 bool_expr: bool_expr AND • bool_expr
+
+    NUMBER   сдвиг, и переход в состояние 6
+    NAME     сдвиг, и переход в состояние 7
+    BOOLEAN  сдвиг, и переход в состояние 8
+    NOT      сдвиг, и переход в состояние 9
+
+    a_expr     переход в состояние 10
+    bool_expr  переход в состояние 42
+
+
+Состояние 28
+
+   15 bool_expr: bool_expr OR • bool_expr
+
+    NUMBER   сдвиг, и переход в состояние 6
+    NAME     сдвиг, и переход в состояние 7
+    BOOLEAN  сдвиг, и переход в состояние 8
+    NOT      сдвиг, и переход в состояние 9
+
+    a_expr     переход в состояние 10
+    bool_expr  переход в состояние 43
+
+
+Состояние 29
+
+    4 stmt: IF bool_expr LPARENT • stmt RPARENT ELSE LPARENT stmt RPARENT
+
+    NAME   сдвиг, и переход в состояние 1
+    IF     сдвиг, и переход в состояние 2
+    WHILE  сдвиг, и переход в состояние 3
+
+    stmt  переход в состояние 44
+
+
+Состояние 30
+
+    5 stmt: WHILE bool_expr LPARENT • stmt RPARENT
+
+    NAME   сдвиг, и переход в состояние 1
+    IF     сдвиг, и переход в состояние 2
+    WHILE  сдвиг, и переход в состояние 3
+
+    stmt  переход в состояние 45
+
+
+Состояние 31
+
+    2 stmt: stmt • SEMICOLON
+    3     | stmt • SEMICOLON stmt
+    3     | stmt SEMICOLON stmt •
+
+    SEMICOLON  сдвиг, и переход в состояние 14
+
+    SEMICOLON  [вывод с использованием правила 3 (stmt)]
+    $default   вывод с использованием правила 3 (stmt)
+
+
+Состояние 32
+
+    8 a_expr: a_expr • PLUS a_expr
+    8       | a_expr PLUS a_expr •
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+
+    MULT  сдвиг, и переход в состояние 19
+    DIV   сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 8 (a_expr)
+
+
+Состояние 33
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+    9       | a_expr MINUS a_expr •
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+
+    MULT  сдвиг, и переход в состояние 19
+    DIV   сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 9 (a_expr)
+
+
+Состояние 34
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   10       | a_expr MULT a_expr •
+   11       | a_expr • DIV a_expr
+
+    $default  вывод с использованием правила 10 (a_expr)
+
+
+Состояние 35
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   11       | a_expr DIV a_expr •
+
+    $default  вывод с использованием правила 11 (a_expr)
+
+
+Состояние 36
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   18 bool_expr: a_expr LEQ a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 18 (bool_expr)
+
+
+Состояние 37
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   16 bool_expr: a_expr LT a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 16 (bool_expr)
+
+
+Состояние 38
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   19 bool_expr: a_expr GEQ a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 19 (bool_expr)
+
+
+Состояние 39
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   17 bool_expr: a_expr GT a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 17 (bool_expr)
+
+
+Состояние 40
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   20 bool_expr: a_expr EQ a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 20 (bool_expr)
+
+
+Состояние 41
+
+    8 a_expr: a_expr • PLUS a_expr
+    9       | a_expr • MINUS a_expr
+   10       | a_expr • MULT a_expr
+   11       | a_expr • DIV a_expr
+   21 bool_expr: a_expr NEQ a_expr •
+
+    PLUS   сдвиг, и переход в состояние 17
+    MINUS  сдвиг, и переход в состояние 18
+    MULT   сдвиг, и переход в состояние 19
+    DIV    сдвиг, и переход в состояние 20
+
+    $default  вывод с использованием правила 21 (bool_expr)
+
+
+Состояние 42
+
+   14 bool_expr: bool_expr • AND bool_expr
+   14          | bool_expr AND bool_expr •
+   15          | bool_expr • OR bool_expr
+
+    $default  вывод с использованием правила 14 (bool_expr)
+
+
+Состояние 43
+
+   14 bool_expr: bool_expr • AND bool_expr
+   15          | bool_expr • OR bool_expr
+   15          | bool_expr OR bool_expr •
+
+    AND  сдвиг, и переход в состояние 27
+
+    $default  вывод с использованием правила 15 (bool_expr)
+
+
+Состояние 44
+
+    2 stmt: stmt • SEMICOLON
+    3     | stmt • SEMICOLON stmt
+    4     | IF bool_expr LPARENT stmt • RPARENT ELSE LPARENT stmt RPARENT
+
+    SEMICOLON  сдвиг, и переход в состояние 14
+    RPARENT    сдвиг, и переход в состояние 46
+
+
+Состояние 45
+
+    2 stmt: stmt • SEMICOLON
+    3     | stmt • SEMICOLON stmt
+    5     | WHILE bool_expr LPARENT stmt • RPARENT
+
+    SEMICOLON  сдвиг, и переход в состояние 14
+    RPARENT    сдвиг, и переход в состояние 47
+
+
+Состояние 46
+
+    4 stmt: IF bool_expr LPARENT stmt RPARENT • ELSE LPARENT stmt RPARENT
+
+    ELSE  сдвиг, и переход в состояние 48
+
+
+Состояние 47
+
+    5 stmt: WHILE bool_expr LPARENT stmt RPARENT •
+
+    $default  вывод с использованием правила 5 (stmt)
+
+
+Состояние 48
+
+    4 stmt: IF bool_expr LPARENT stmt RPARENT ELSE • LPARENT stmt RPARENT
+
+    LPARENT  сдвиг, и переход в состояние 49
+
+
+Состояние 49
+
+    4 stmt: IF bool_expr LPARENT stmt RPARENT ELSE LPARENT • stmt RPARENT
+
+    NAME   сдвиг, и переход в состояние 1
+    IF     сдвиг, и переход в состояние 2
+    WHILE  сдвиг, и переход в состояние 3
+
+    stmt  переход в состояние 50
+
+
+Состояние 50
+
+    2 stmt: stmt • SEMICOLON
+    3     | stmt • SEMICOLON stmt
+    4     | IF bool_expr LPARENT stmt RPARENT ELSE LPARENT stmt • RPARENT
+
+    SEMICOLON  сдвиг, и переход в состояние 14
+    RPARENT    сдвиг, и переход в состояние 51
+
+
+Состояние 51
+
+    4 stmt: IF bool_expr LPARENT stmt RPARENT ELSE LPARENT stmt RPARENT •
+
+    $default  вывод с использованием правила 4 (stmt)

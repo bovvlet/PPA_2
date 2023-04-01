@@ -6,16 +6,60 @@
 
 using namespace std;
 
-class Statement {
+class Statement;
+class Expression;
+class AssignStatement;
+class SeqStatement;
+class IfStatement;
+class WhileStatement;
+class VarExpression;
+class NumExpression;
+class BoolExpression;
+class NotExpression;
+class BinOpExpression;
+
+/********************   Visitor Interfaces    ********************/
+class Visitor
+{
+public:
+    virtual ~Visitor() {}
+    virtual void visiteStatement(Statement * p) = 0;
+    virtual void visiteExpression(Expression * p) = 0;
+    virtual void visiteAssignStatement(AssignStatement * p) = 0;
+    virtual void visiteSeqStatement(SeqStatement * p) = 0;
+    virtual void visiteIfStatement(IfStatement * p) = 0;
+    virtual void visiteWhileStatement(WhileStatement * p) = 0;
+    virtual void visiteVarExpression(VarExpression * p) = 0;
+    virtual void visiteNumExpression(NumExpression * p) = 0;
+    virtual void visiteBoolExpression(BoolExpression * p) = 0;
+    virtual void visiteNotExpression(NotExpression * p) = 0;
+    virtual void visiteBinOpExpression(BinOpExpression * p) = 0;
+};
+
+class Visitable
+{
+public:
+    virtual ~Visitable() {}
+    virtual void accept(Visitor *v) = 0;
+};
+
+/********************   Main Classes    ********************/
+class Statement : public Visitable{
 public:
     virtual ~Statement() {}
     virtual void execute() = 0;
+    virtual void accept(Visitor *v){
+        v->visiteStatement(this);
+    };
 };
 
-class Expression {
+class Expression : public Visitable{
 public:
     virtual ~Expression() {}
     virtual int evaluate() = 0;
+    virtual void accept(Visitor *v){
+        v->visiteExpression(this);
+    };
 };
 
 class AssignStatement : public Statement {
@@ -23,6 +67,10 @@ public:
     AssignStatement(std::string var, Expression* expr) : var_(var), expr_(expr) {}
     virtual void execute() {
         std::cout << var_ << " = " << expr_->evaluate() << std::endl;
+    }
+    void accept(Visitor *v)
+    {
+        v->visiteAssignStatement(this);
     }
     std::string var_;
     Expression* expr_;
@@ -34,6 +82,10 @@ public:
     virtual void execute() {
         s1_->execute();
         s2_->execute();
+    }
+    void accept(Visitor *v)
+    {
+        v->visiteSeqStatement(this);
     }
     Statement* s1_;
     Statement* s2_;
@@ -49,6 +101,10 @@ public:
             s2_->execute();
         }
     }
+    void accept(Visitor *v)
+    {
+        v->visiteIfStatement(this);
+    }
     Expression* cond_;
     Statement* s1_;
     Statement* s2_;
@@ -62,6 +118,10 @@ public:
             body_->execute();
         }
     }
+    void accept(Visitor *v)
+    {
+        v->visiteWhileStatement(this);
+    }
     Expression* cond_;
     Statement* body_;
 };
@@ -70,6 +130,10 @@ class VarExpression : public Expression {
 public:
     VarExpression(std::string name) : name_(name) {}
     virtual int evaluate() { return 0; }
+    void accept(Visitor *v)
+    {
+        v->visiteVarExpression(this);
+    }
     std::string name_;
 };
 
@@ -77,6 +141,10 @@ class NumExpression : public Expression {
 public:
     NumExpression(int value) : value_(value) {}
     virtual int evaluate() { return value_; }
+    void accept(Visitor *v)
+    {
+        v->visiteNumExpression(this);
+    }
     int value_;
 };
 
@@ -84,6 +152,10 @@ class BoolExpression : public Expression {
 public:
     BoolExpression(bool value) : value_(value) {}
     virtual int evaluate() { return value_; }
+    void accept(Visitor *v)
+    {
+        v->visiteBoolExpression(this);
+    }
     bool value_;
 };
 
@@ -91,6 +163,10 @@ class NotExpression : public Expression {
 public:
     NotExpression(bool value) : value_((1 ^ value)) {}
     virtual int evaluate() { return value_; }
+    void accept(Visitor *v)
+    {
+        v->visiteNotExpression(this);
+    }
     bool value_;
 };
 
@@ -122,6 +198,10 @@ public:
             return lhs_->evaluate() || rhs_->evaluate();
         }
         return 0;
+    }
+    void accept(Visitor *v)
+    {
+        v->visiteBinOpExpression(this);
     }
     std::string op_;
     Expression* lhs_;
