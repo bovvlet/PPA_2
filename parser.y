@@ -22,8 +22,6 @@ Statement* root;
     Expression* expression;
 }
 
-%define parse.error verbose
-
 %token <num> NUMBER
 %token <str> NAME
 %token <boolean> BOOLEAN
