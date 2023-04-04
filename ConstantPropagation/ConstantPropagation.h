@@ -7,7 +7,7 @@ using namespace std;
 
 class ConstantPropagation : public Visitor{
     // List of variables that can be replaced at some state
-    vector<unordered_map<string, int>> listStates;
+    vector<unordered_map<string, int> > listStates;
     // List of "In" variables to translate the "Out" states to the "In" state for the next
     unordered_map<string, int> currentIn = unordered_map<string, int>();
     // Return value for calculating expressions that can be calculated
